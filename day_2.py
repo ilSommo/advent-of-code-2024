@@ -58,7 +58,6 @@ def check_safety_2(report):
         if not (
             difference * last_difference >= 0 and 1 <= abs(difference) <= 3
         ):
-
             for j in range(i - 1, i + 2):
                 report_copy = report.copy()
                 report_copy.pop(j)
