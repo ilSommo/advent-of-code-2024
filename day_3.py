@@ -8,28 +8,39 @@ import re
 
 
 def main():
+    """Solve day 3 stars."""
     with open("data/day_3.txt", encoding="ascii") as input_file:
         puzzle_input = input_file.read()
 
-    star_1(puzzle_input)
-    star_2(puzzle_input)
+    print(star_1(puzzle_input))
+    print(star_2(puzzle_input))
 
 
 def star_1(puzzle_input):
-    pairs = get_pairs(puzzle_input)
+    """Solve first star."""
+    pairs = get_pairs_1(puzzle_input)
     total = compute_total(pairs)
 
-    print(total)
+    return total
 
 
 def star_2(puzzle_input):
+    """Solve second star."""
     pairs = get_pairs_2(puzzle_input)
     total = compute_total(pairs)
 
-    print(total)
+    return total
 
 
-def get_pairs(string):
+def compute_total(pairs):
+    """Compute the total sum."""
+    total = sum(pair[0] * pair[1] for pair in pairs)
+
+    return total
+
+
+def get_pairs_1(string):
+    """Get good pairs."""
     raw_pairs = re.findall(r"(?<=mul\()[0-9]{1,3},[0-9]{1,3}(?=\))", string)
     pairs = []
 
@@ -40,13 +51,8 @@ def get_pairs(string):
     return pairs
 
 
-def compute_total(pairs):
-    total = sum([pair[0] * pair[1] for pair in pairs])
-
-    return total
-
-
 def get_pairs_2(string):
+    """Get good pairs."""
     raw_pairs = re.findall(
         r"do\(\)|don't\(\)|(?<=mul\()[0-9]{1,3},[0-9]{1,3}(?=\))", string
     )

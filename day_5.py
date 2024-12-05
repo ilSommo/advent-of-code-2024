@@ -8,6 +8,7 @@ from collections import defaultdict
 
 
 def main():
+    """Solve day 5 stars."""
     with open("data/day_5.txt", encoding="ascii") as input_file:
         puzzle_input = input_file.readlines()
 
@@ -16,16 +17,18 @@ def main():
 
 
 def star_1(puzzle_input):
+    """Solve first star."""
     rules, updates = parse_input(puzzle_input)
     total = 0
 
     for update in updates:
-        total += check_update(update, rules)
+        total += check_update_1(update, rules)
 
     return total
 
 
 def star_2(puzzle_input):
+    """Solve second star."""
     rules, updates = parse_input(puzzle_input)
     total = 0
 
@@ -35,7 +38,36 @@ def star_2(puzzle_input):
     return total
 
 
+def check_update_1(update, rules):
+    """Check update value."""
+    forbidden = set()
+
+    for page in update:
+        if page in forbidden:
+            return 0
+
+        forbidden.update(set(rules[page]))
+
+    return update[len(update) // 2]
+
+
+def check_update_2(update, rules):
+    """Check update value."""
+    forbidden = set()
+
+    for page in update:
+        if page in forbidden:
+            ordered_update = reorder_update(update, rules)
+
+            return ordered_update[len(update) // 2]
+
+        forbidden.update(set(rules[page]))
+
+    return 0
+
+
 def parse_input(puzzle_input):
+    """Parse puzzle input in rules and updates."""
     rules = defaultdict(list)
     updates = []
 
@@ -50,35 +82,8 @@ def parse_input(puzzle_input):
     return rules, updates
 
 
-def check_update(update, rules):
-    forbidden = set()
-
-    for page in update:
-        if page in forbidden:
-            return 0
-
-        else:
-            forbidden.update(set(rules[page]))
-
-    return update[len(update) // 2]
-
-
-def check_update_2(update, rules):
-    forbidden = set()
-
-    for page in update:
-        if page in forbidden:
-            ordered_update = reorder_update(update, rules)
-
-            return ordered_update[len(update) // 2]
-
-        else:
-            forbidden.update(set(rules[page]))
-
-    return 0
-
-
 def reorder_update(update, rules):
+    """Reorder incorrect update."""
     forbidden = {}
 
     for page in update:

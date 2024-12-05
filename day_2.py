@@ -6,34 +6,38 @@ __license__ = "MIT"
 
 
 def main():
+    """Solve day 2 stars."""
     with open("data/day_2.txt", encoding="ascii") as input_file:
         puzzle_input = input_file.readlines()
 
-    star_1(puzzle_input)
-    star_2(puzzle_input)
+    print(star_1(puzzle_input))
+    print(star_2(puzzle_input))
 
 
 def star_1(puzzle_input):
+    """Solve first star."""
     safe_reports = 0
 
     for line in puzzle_input:
         report = line.split()
         safe_reports += check_safety_1(report)
 
-    print(safe_reports)
+    return safe_reports
 
 
 def star_2(puzzle_input):
+    """Solve second star."""
     safe_reports = 0
 
     for line in puzzle_input:
         report = line.split()
         safe_reports += check_safety_2(report)
 
-    print(safe_reports)
+    return safe_reports
 
 
 def check_safety_1(report):
+    """Check report safety."""
     last_difference = 0
 
     for i, _ in enumerate(report[:-1]):
@@ -50,6 +54,7 @@ def check_safety_1(report):
 
 
 def check_safety_2(report):
+    """Check report safety."""
     last_difference = 0
 
     for i, _ in enumerate(report[:-1]):

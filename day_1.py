@@ -6,14 +6,16 @@ __license__ = "MIT"
 
 
 def main():
+    """Solve day 1 stars."""
     with open("data/day_1.txt", encoding="ascii") as input_file:
         puzzle_input = input_file.readlines()
 
-    star_1(puzzle_input)
-    star_2(puzzle_input)
+    print(star_1(puzzle_input))
+    print(star_2(puzzle_input))
 
 
 def star_1(puzzle_input):
+    """Solve first star."""
     list_0, list_1 = create_lists(puzzle_input)
 
     list_0.sort()
@@ -21,18 +23,20 @@ def star_1(puzzle_input):
 
     total_distance = compute_sum(list_0, list_1)
 
-    print(total_distance)
+    return total_distance
 
 
 def star_2(puzzle_input):
+    """Solve second star."""
     list_0, list_1 = create_lists(puzzle_input)
 
     total_distance = compute_similarity(list_0, list_1)
 
-    print(total_distance)
+    return total_distance
 
 
 def create_lists(lines):
+    """Create lists from input."""
     list_0 = []
     list_1 = []
 
@@ -45,6 +49,7 @@ def create_lists(lines):
 
 
 def compute_sum(list_0, list_1):
+    """Compute total distance."""
     total = 0
 
     for number_0, number_1 in zip(list_0, list_1):
@@ -54,6 +59,7 @@ def compute_sum(list_0, list_1):
 
 
 def compute_similarity(list_0, list_1):
+    """Compute similarity."""
     total = 0
 
     for number_0 in list_0:

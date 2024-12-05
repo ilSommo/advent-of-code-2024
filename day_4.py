@@ -8,6 +8,7 @@ import itertools
 
 
 def main():
+    """Solve day 4 stars."""
     with open("data/day_4.txt", encoding="ascii") as input_file:
         puzzle_input = input_file.readlines()
 
@@ -16,6 +17,7 @@ def main():
 
 
 def star_1(puzzle_input):
+    """Solve first star."""
     grid = load_grid(puzzle_input)
     total = 0
 
@@ -27,29 +29,19 @@ def star_1(puzzle_input):
 
 
 def star_2(puzzle_input):
+    """Solve second star."""
     grid = load_grid(puzzle_input)
     total = 0
 
-    for i, row in enumerate(grid):
-        for j, _ in enumerate(row):
-            total += check_x(grid, i, j)
+    for i, row in enumerate(grid[1:-1]):
+        for j, _ in enumerate(row[1:-1]):
+            total += check_x(grid, i + 1, j + 1)
 
     return total
 
 
-def load_grid(puzzle_input):
-    grid = []
-
-    for i, line in enumerate(puzzle_input):
-        grid.append([])
-
-        for j, letter in enumerate(line.rstrip()):
-            grid[i].append(letter)
-
-    return grid
-
-
 def check_coord(grid, i, j):
+    """Check if XMAS starts at given coordinates."""
     n_rows = len(grid)
     n_cols = len(grid[0])
     total = 0
@@ -68,25 +60,29 @@ def check_coord(grid, i, j):
 
 
 def check_x(grid, i, j):
-    n_rows = len(grid)
-    n_cols = len(grid[0])
-
-    if grid[i][j] == "A" and 1 <= i < n_rows - 1 and 1 <= j < n_cols - 1:
-        if (
-            grid[i - 1][j - 1] == "M"
-            and grid[i + 1][j + 1] == "S"
-            or grid[i - 1][j - 1] == "S"
-            and grid[i + 1][j + 1] == "M"
-        ):
+    """Check if an X-MAS is present at given coordinates."""
+    if grid[i][j] == "A":
+        for a, b in itertools.product([-1, 1], [-1, 1]):
             if (
-                grid[i - 1][j + 1] == "M"
-                and grid[i + 1][j - 1] == "S"
-                or grid[i - 1][j + 1] == "S"
-                and grid[i + 1][j - 1] == "M"
+                grid[i + a][j + a] == grid[i + b][j - b] == "M"
+                and grid[i - a][j - a] == grid[i - b][j + b] == "S"
             ):
                 return 1
 
     return 0
+
+
+def load_grid(puzzle_input):
+    """Load grid from puzzle input."""
+    grid = []
+
+    for i, line in enumerate(puzzle_input):
+        grid.append([])
+
+        for letter in line.rstrip():
+            grid[i].append(letter)
+
+    return grid
 
 
 if __name__ == "__main__":
