@@ -4,8 +4,6 @@ __author__ = "Martino M. L. Pulici <martinomarelakota@yahoo.it>"
 __date__ = "2024"
 __license__ = "MIT"
 
-import itertools
-
 
 def main():
     """Solve day 6 stars."""
@@ -18,13 +16,37 @@ def main():
 
 def star_1(puzzle_input):
     """Solve first star."""
+    n_rows = len(puzzle_input)
+    n_cols = len(puzzle_input[0].rstrip())
     obstructions, guard = load_map(puzzle_input)
-    direction = -1 + 0j
-    positions = set()
 
-    while 0 <= guard.real < len(puzzle_input) and 0 <= guard.imag < len(
-        puzzle_input[0].rstrip()
-    ):
+    positions = get_path(obstructions, guard, (n_rows, n_cols))
+
+    return len(positions)
+
+
+def star_2(puzzle_input):
+    """Solve second star."""
+    n_rows = len(puzzle_input)
+    n_cols = len(puzzle_input[0].rstrip())
+    obstructions, guard = load_map(puzzle_input)
+
+    positions = get_path(obstructions, guard, (n_rows, n_cols)) - {guard}
+
+    looping_obstructions = sum(
+        is_loop(obstructions | {position}, guard, (n_rows, n_cols))
+        for position in positions
+    )
+
+    return looping_obstructions
+
+
+def get_path(obstructions, guard, dims):
+    """Get path of the guard."""
+    positions = set()
+    direction = -1 + 0j
+
+    while 0 <= guard.real < dims[0] and 0 <= guard.imag < dims[1]:
         positions.add(guard)
 
         if guard + direction not in obstructions:
@@ -33,45 +55,33 @@ def star_1(puzzle_input):
         else:
             direction *= -1j
 
-    return len(positions)
+    return positions
 
 
-def star_2(puzzle_input):
-    """Solve second star."""
-    obstructions, guard = load_map(puzzle_input)
-    looping_obstructions = 0
+def is_loop(obstructions, guard, dims):
+    """Check if there is a loop."""
+    positions_directions = set()
+    direction = -1 + 0j
 
-    for i, j in itertools.product(
-        range(len(puzzle_input)), range(len(puzzle_input[0].rstrip()))
-    ):
-        if i + j * 1j not in obstructions and i + j * 1j != guard:
-            new_obstructions = obstructions.copy()
-            new_obstructions.add(i + j * 1j)
-            positions_directions = set()
-            new_guard = guard
-            direction = -1 + 0j
+    while 0 <= guard.real < dims[0] and 0 <= guard.imag < dims[1]:
+        if (guard, direction) in positions_directions:
+            return 1
 
-            while 0 <= new_guard.real < len(
-                puzzle_input
-            ) and 0 <= new_guard.imag < len(puzzle_input[0].rstrip()):
-                if (new_guard, direction) in positions_directions:
-                    looping_obstructions += 1
-                    break
+        positions_directions.add((guard, direction))
 
-                positions_directions.add((new_guard, direction))
+        if guard + direction not in obstructions:
+            guard += direction
 
-                if new_guard + direction not in new_obstructions:
-                    new_guard = new_guard + direction
+        else:
+            direction *= -1j
 
-                else:
-                    direction *= -1j
-
-    return looping_obstructions
+    return 0
 
 
 def load_map(puzzle_input):
     """Load puzzle map."""
     obstructions = set()
+
     for i, row in enumerate(puzzle_input):
         for j, position in enumerate(row):
             match position:
