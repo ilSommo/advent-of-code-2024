@@ -17,13 +17,13 @@ def main():
 def star_1(puzzle_input):
     """Solve first star."""
     equations = load_equations(puzzle_input)
-    functions = (
+    operations = (
         lambda operand_0, operand_1: operand_0 + operand_1,
         lambda operand_0, operand_1: operand_0 * operand_1,
     )
 
     total = sum(
-        test_equation(test_value, operands, functions)
+        test_equation(test_value, operands, operations)
         for test_value, operands in equations
     )
 
@@ -33,14 +33,14 @@ def star_1(puzzle_input):
 def star_2(puzzle_input):
     """Solve second star."""
     equations = load_equations(puzzle_input)
-    functions = (
+    operations = (
         lambda operand_0, operand_1: operand_0 + operand_1,
         lambda operand_0, operand_1: operand_0 * operand_1,
         lambda operand_0, operand_1: int(f"{operand_0}{operand_1}"),
     )
 
     total = sum(
-        test_equation(test_value, operands, functions)
+        test_equation(test_value, operands, operations)
         for test_value, operands in equations
     )
 
@@ -63,12 +63,12 @@ def load_equations(puzzle_input):
     return equations
 
 
-def test_equation(test_value, operands, functions):
+def test_equation(test_value, operands, operations):
     """Test if equation is possbile."""
     partials = []
 
-    for function in functions:
-        partial = function(operands[0], operands[1])
+    for operation in operations:
+        partial = operation(operands[0], operands[1])
         if partial <= test_value:
             partials.append(partial)
 
@@ -76,7 +76,7 @@ def test_equation(test_value, operands, functions):
         return test_value if test_value in partials else 0
 
     for partial in partials:
-        if test_equation(test_value, [partial] + operands[2:], functions):
+        if test_equation(test_value, [partial] + operands[2:], operations):
             return test_value
 
     return 0
