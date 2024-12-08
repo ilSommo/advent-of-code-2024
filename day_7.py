@@ -73,6 +73,11 @@ def test_equation_1(equation):
 
 def test_equation_2(equation):
     """Test if equation is possbile."""
+    test_1 = test_equation_1(equation)
+
+    if test_1:
+        return test_1
+
     test_value, operands = equation
 
     for operators in itertools.product(
