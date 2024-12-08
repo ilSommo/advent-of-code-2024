@@ -4,8 +4,6 @@ __author__ = "Martino M. L. Pulici <martinomarelakota@yahoo.it>"
 __date__ = "2024"
 __license__ = "MIT"
 
-import itertools
-
 
 def main():
     """Solve day 7 stars."""
@@ -19,8 +17,15 @@ def main():
 def star_1(puzzle_input):
     """Solve first star."""
     equations = load_equations(puzzle_input)
+    functions = (
+        lambda operand_0, operand_1: operand_0 + operand_1,
+        lambda operand_0, operand_1: operand_0 * operand_1,
+    )
 
-    total = sum(test_equation_1(equation) for equation in equations)
+    total = sum(
+        test_equation(test_value, operands, functions)
+        for test_value, operands in equations
+    )
 
     return total
 
@@ -28,8 +33,16 @@ def star_1(puzzle_input):
 def star_2(puzzle_input):
     """Solve second star."""
     equations = load_equations(puzzle_input)
+    functions = (
+        lambda operand_0, operand_1: operand_0 + operand_1,
+        lambda operand_0, operand_1: operand_0 * operand_1,
+        lambda operand_0, operand_1: int(f"{operand_0}{operand_1}"),
+    )
 
-    total = sum(test_equation_2(equation) for equation in equations)
+    total = sum(
+        test_equation(test_value, operands, functions)
+        for test_value, operands in equations
+    )
 
     return total
 
@@ -43,61 +56,28 @@ def load_equations(puzzle_input):
         equations.append(
             (
                 int(test_value),
-                tuple(int(operand) for operand in operands.split()),
+                [int(operand) for operand in operands.split()],
             )
         )
 
     return equations
 
 
-def test_equation_1(equation):
+def test_equation(test_value, operands, functions):
     """Test if equation is possbile."""
-    test_value, operands = equation
+    partials = []
 
-    for operators in itertools.product(["+", "*"], repeat=len(operands) - 1):
-        total = operands[0]
+    for function in functions:
+        partial = function(operands[0], operands[1])
+        if partial <= test_value:
+            partials.append(partial)
 
-        for i, operator in enumerate(operators):
-            match operator:
-                case "+":
-                    total += operands[i + 1]
+    if len(operands) == 2:
+        return test_value if test_value in partials else 0
 
-                case "*":
-                    total *= operands[i + 1]
-
-        if total == test_value:
-            return total
-
-    return 0
-
-
-def test_equation_2(equation):
-    """Test if equation is possbile."""
-    test_1 = test_equation_1(equation)
-
-    if test_1:
-        return test_1
-
-    test_value, operands = equation
-
-    for operators in itertools.product(
-        ["+", "*", "||"], repeat=len(operands) - 1
-    ):
-        total = operands[0]
-
-        for i, operator in enumerate(operators):
-            match operator:
-                case "+":
-                    total += operands[i + 1]
-
-                case "*":
-                    total *= operands[i + 1]
-
-                case "||":
-                    total = int(f"{total}{operands[i + 1]}")
-
-        if total == test_value:
-            return total
+    for partial in partials:
+        if test_equation(test_value, [partial] + operands[2:], functions):
+            return test_value
 
     return 0
 
