@@ -19,35 +19,15 @@ def main():
 def star_1(puzzle_input):
     """Solve first star."""
     files, free_space = load_disk_map(puzzle_input)
-
-    for _ in range(len(files)):
-        i, (size, value) = files.popitem()
-
-        if min(free_space.keys()) >= i:
-            files[i] = (size, value)
-            break
-
-        while size:
-            j, free_size = free_space.popitem(0)
-
-            if j >= i:
-                free_space[j] = free_size
-                files[i] = (size, value)
-                break
-
-            files[j] = (1, value)
-            free_space[i] = 1
-            size -= 1
-
-            if free_size >= 2:
-                free_space[j + 1] = free_size - 1
-
-    memory = sum(int(digit) for digit in puzzle_input) * [0]
+    fragmented_files = SortedDict()
 
     for i, (size, value) in files.items():
-        memory[i : i + size] = size * [value]
+        for j in range(size):
+            fragmented_files[i + j] = (1, value)
 
-    checksum = sum(i * id_number for i, id_number in enumerate(memory))
+    files = compact_memory(fragmented_files, free_space)
+
+    checksum = compute_checksum(files)
 
     return checksum
 
@@ -55,6 +35,15 @@ def star_1(puzzle_input):
 def star_2(puzzle_input):
     """Solve second star."""
     files, free_space = load_disk_map(puzzle_input)
+    files = compact_memory(files, free_space)
+
+    checksum = compute_checksum(files)
+
+    return checksum
+
+
+def compact_memory(files, free_space):
+    """Compact files in memory."""
     new_files = SortedDict()
 
     for _ in range(len(files)):
@@ -64,26 +53,27 @@ def star_2(puzzle_input):
             if j >= i:
                 break
 
-            if free_size == size:
+            if free_size >= size:
                 free_space.pop(j)
-                i = j
-                break
 
-            if free_size > size:
-                free_space.pop(j)
-                free_space[i] = size
-                free_space[j + size] = free_size - size
+                if free_size > size:
+                    free_space[i] = size
+                    free_space[j + size] = free_size - size
+
                 i = j
                 break
 
         new_files[i] = (size, value)
 
-    memory = sum(int(digit) for digit in puzzle_input) * [0]
+    return new_files
 
-    for i, (size, value) in new_files.items():
-        memory[i : i + size] = size * [value]
 
-    checksum = sum(i * id_number for i, id_number in enumerate(memory))
+def compute_checksum(files):
+    """Compute checksum of files."""
+    checksum = sum(
+        int(size * value * (2 * i + size - 1) / 2)
+        for i, (size, value) in files.items()
+    )
 
     return checksum
 
