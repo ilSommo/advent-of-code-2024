@@ -54,7 +54,7 @@ def compact_memory(files, free_space):
                 break
 
             if free_size >= size:
-                free_space.pop(j)
+                del free_space[j]
 
                 if free_size > size:
                     free_space[i] = size
