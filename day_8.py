@@ -4,9 +4,9 @@ __author__ = "Martino M. L. Pulici <martinomarelakota@yahoo.it>"
 __date__ = "2024"
 __license__ = "MIT"
 
-from collections import defaultdict
 import itertools
 import math
+from collections import defaultdict
 
 
 def main():
