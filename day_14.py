@@ -4,8 +4,8 @@ __author__ = "Martino M. L. Pulici <martinomarelakota@yahoo.it>"
 __date__ = "2024"
 __license__ = "MIT"
 
-from functools import cache
 import math
+from functools import cache
 
 HEIGHT = 103
 WIDTH = 101
