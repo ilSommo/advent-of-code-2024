@@ -1,7 +1,7 @@
 """Day 24: Crossed Wires"""
 
 __author__ = "Martino M. L. Pulici <martinomarelakota@yahoo.it>"
-__date__ = "2024"
+__date__ = "2025"
 __license__ = "MIT"
 
 from collections import deque
